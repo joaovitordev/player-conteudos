@@ -1,7 +1,9 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
-
+  server: {
+    port: 4000, // Altere para a porta desejada
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'player-conteudos',
@@ -21,7 +23,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: '~/plugins/vue-pdf.js', mode: 'client' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -35,7 +37,19 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: ['@nuxtjs/proxy'],
+  proxy: {
+    '/graphql': {
+      target: 'http://localhost:3000', // O servidor GraphQL
+      pathRewrite: { '^/graphql': '/graphql' },
+      changeOrigin: true
+    },
+    "/uploads/": {
+      target: "http://localhost:3000",
+      pathRewrite: { "^/uploads/": "/uploads/" },
+      changeOrigin: true,
+    },
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
