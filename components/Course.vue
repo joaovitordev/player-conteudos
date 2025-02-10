@@ -13,6 +13,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2">
         <div v-if="activeCourse" class="space-y-4">
+          <!-- Title & Description -->
+          <h3 class="text-lg font-semibold">{{ activeCourse.title }}</h3>
+          <p v-if="activeCourse.description" class="text-sm text-gray-600">{{ activeCourse.description }}</p>
 
           <!-- Video -->
           <div v-if="activeCourse.type === 'mp4'" class="w-full aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
@@ -31,14 +34,16 @@
             <img :src="activeCourse.url" alt="Course Image" class="w-full h-auto object-cover">
           </div>
 
+           <!-- TXT -->
+           <div v-else-if="activeCourse.type === 'txt'" class="bg-gray-200 rounded-lg overflow-hidden">
+            <iframe :src="activeCourse.url" style="width: 100%;"></iframe>
+          </div>
+
           <!-- Link -->
           <div v-else class="bg-gray-200 rounded-lg p-4 text-center">
             <a :href="activeCourse.url" target="_blank" class="text-blue-600 underline">Open Link</a>
           </div>
 
-          <!-- Title & Description -->
-          <h3 class="text-lg font-semibold">{{ activeCourse.title }}</h3>
-          <p v-if="activeCourse.description" class="text-sm text-gray-600">{{ activeCourse.description }}</p>
       </div>
 
       <div v-else class="text-center text-gray-500">Selecione um curso para visualizar os detalhes.</div>
@@ -62,13 +67,14 @@
         </div>
 
         <div class="bg-white p-4 rounded-lg shadow">
-          <h4 class="text-sm font-semibold text-gray-700">Course Completion</h4>
+          <h4 class="text-sm font-semibold text-gray-700">Aulas</h4>
           <div class="mt-4 space-y-2">
             <div 
               v-for="course in courses" 
               :key="course.id" 
               class="flex flex-col sm:flex-row items-center justify-between cursor-pointer p-3 rounded-lg border border-gray-200 hover:shadow-md transition"
-              :class="{'bg-purple-50': activeCourse?.id === course.id}"
+              :class="{'bg-purple-50': activeCourse && activeCourse.id === course.id}"
+
               @click="setActiveCourse(course)"
             >
               <div class="flex items-center space-x-3">
@@ -129,6 +135,20 @@ export default {
           type: "pdf",
         },
         {
+          id: "6969d6c7-40ea-4a3c-b635-d6546b971304",
+          title: "Plataforma de Aprendizado Online",
+          description: "Acesse este link para cursos e treinamentos voltados para tecnologia e inovação.",
+          url: "https://learning.rocks",
+          type: "link",
+        },
+        {
+          id: "12ed0f9e-ff27-4052-99c5-2022a438e5ee",
+          title: "Clean Code",
+          description: "Clean Code na prática.",
+          url: "http://localhost:3000/uploads/conteudo.txt?expires=1739136784&signature=3fbte",
+          type: "txt",
+		    },
+        {
           id: "d060ab17-c961-4de7-929f-a0d52aa3ecf4",
           title: "Inteligência artificial",
           description: null,
@@ -138,6 +158,7 @@ export default {
       ],
       activeCourse: null,
       completedCourses: [],
+      mockToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMThjMzdjZTItY2QzNC00MzA1LTljYTQtYzE1ZmM3MzZiZWFjIn0.pqWRiyQuvWRVQgIzKvQ85RrBwSF5KxeGZrkFvKt2CG8'
     };
   },
   computed: {
@@ -155,7 +176,7 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMThjMzdjZTItY2QzNC00MzA1LTljYTQtYzE1ZmM3MzZiZWFjIn0.pqWRiyQuvWRVQgIzKvQ85RrBwSF5KxeGZrkFvKt2CG8",
+            "Authorization": `Bearer ${this.mockToken}`,
           },
           body: JSON.stringify({
             query: `query { 
